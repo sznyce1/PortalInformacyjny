@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 namespace ProjektZaliczeniowy.Controllers
 {
     [Route("api/category")]
+    [ApiController]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -23,23 +24,19 @@ namespace ProjektZaliczeniowy.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
-            var isDeleted = _categoryService.Delete(id);
-            if (isDeleted)
-            {
-                return NoContent();
-            }
-            else
-            {
-                return NotFound();
-            }
+            _categoryService.Delete(id);
+            
+            return NoContent();
+            
         }
         [HttpPost]
         public ActionResult CreateCategory([FromBody]CreateCategoryDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            //kod wywoływany automatycznie przez atrybut api kontroller
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
             var name = _categoryService.Create(dto);
 
             return Created($"/api/category/{name}", null);
@@ -54,10 +51,7 @@ namespace ProjektZaliczeniowy.Controllers
         public ActionResult<Category> Get([FromRoute] string name)
         {
             var category = _categoryService.GetByName(name);
-            if (category is null)
-            {
-                return NotFound();
-            }
+
             return Ok(category);
         }
     }
