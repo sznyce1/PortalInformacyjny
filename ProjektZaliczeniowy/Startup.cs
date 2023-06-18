@@ -36,6 +36,7 @@ namespace ProjektZaliczeniowy
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddScoped<IArticleService, ArticleService>();
             services.AddSwaggerGen();
         }
 

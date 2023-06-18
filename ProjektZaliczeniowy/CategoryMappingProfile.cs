@@ -13,6 +13,8 @@ namespace ProjektZaliczeniowy
         public CategoryMappingProfile()
         {
             CreateMap<CreateCategoryDto, Category>();
+            CreateMap<CreateArticleDto, Article>();
+            CreateMap<Article, ArticleDto>();
         }
     }
 }
