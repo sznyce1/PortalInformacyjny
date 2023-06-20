@@ -12,9 +12,17 @@ namespace ProjektZaliczeniowy.entities
         public DbSet<Article> Articles { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>()
+                .Property(p => p.Email)
+                .IsRequired();
+            modelBuilder.Entity<Role>()
+                .Property(p => p.Name)
+                .IsRequired();
             modelBuilder.Entity<Article>()
                 .Property(p => p.Name)
                 .IsRequired()

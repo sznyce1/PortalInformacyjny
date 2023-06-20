@@ -18,6 +18,12 @@ namespace ProjektZaliczeniowy
         {
             if (_dbContext.Database.CanConnect())
             {
+                if (!_dbContext.Roles.Any())
+                {
+                    var Roles = GetRoles();
+                    _dbContext.Roles.AddRange(Roles);
+                    _dbContext.SaveChanges();
+                }
                 if (!_dbContext.Categories.Any())
                 {
                     var Categories = GetCategories();
@@ -25,6 +31,21 @@ namespace ProjektZaliczeniowy
                     _dbContext.SaveChanges();
                 }
             }
+        }
+        private IEnumerable<Role> GetRoles()
+        {
+            var roles = new List<Role>()
+            {
+                new Role()
+                {
+                    Name= "User"
+                },
+                new Role()
+                {
+                    Name= "Admin"
+                },
+            };
+            return roles;
         }
         private IEnumerable<Category> GetCategories()
         {
