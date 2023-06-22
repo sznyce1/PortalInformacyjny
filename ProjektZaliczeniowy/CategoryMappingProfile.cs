@@ -15,6 +15,7 @@ namespace ProjektZaliczeniowy
             CreateMap<CreateCategoryDto, Category>();
             CreateMap<CreateArticleDto, Article>();
             CreateMap<Article, ArticleDto>();
+            CreateMap<CreateCommentDto, Comment>();
         }
     }
 }

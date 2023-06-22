@@ -64,6 +64,7 @@ namespace ProjektZaliczeniowy
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<IAccountService,AccountService>();
+            services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
@@ -89,6 +90,8 @@ namespace ProjektZaliczeniowy
                 c.SwaggerEndpoint("/swagger/v1/swagger.json","ProjektZaliczeniowy");
             });
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

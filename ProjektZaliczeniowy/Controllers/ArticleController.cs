@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjektZaliczeniowy.entities;
 using ProjektZaliczeniowy.Models;
 using ProjektZaliczeniowy.Services;
 using System.Collections.Generic;
@@ -48,6 +49,11 @@ namespace ProjektZaliczeniowy.Controllers
         {
             _articleService.DeleteById(categoryName, articleId);
             return NoContent();
+        }
+        [HttpGet("{articleId}/comments")]
+        public List<Comment> GetArticleComments()
+        {
+            var comments = ArticleService.GetComments();
         }
     }
 }
