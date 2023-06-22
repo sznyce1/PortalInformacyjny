@@ -42,10 +42,10 @@ namespace ProjektZaliczeniowy.Controllers
 
             return NoContent();
         }
-        [HttpDelete("commentId")]
+        [HttpDelete("{commentId}")]
         public ActionResult DeleteById([FromRoute] int articleId, [FromRoute] int commentId)
         {
-            _articleService.DeleteById(categoryName, articleId);
+            _commentService.DeleteById(articleId, commentId);
             return NoContent();
         }
     }
