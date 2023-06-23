@@ -3,6 +3,11 @@ using System.Security.Claims;
 
 namespace ProjektZaliczeniowy.Services
 {
+    public interface IUserContextService
+    {
+        int? GetUserId { get; }
+        ClaimsPrincipal User { get; }
+    }
     public class UserContextService : IUserContextService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
