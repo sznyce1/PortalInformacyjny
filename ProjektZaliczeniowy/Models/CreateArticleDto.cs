@@ -13,5 +13,6 @@ namespace ProjektZaliczeniowy.Models
         [MaxLength(5000)]
         public string Content { get; set; }
         public int CategoryId { get; set; }
+        public int? AuthorId { get; set; }
     }
 }

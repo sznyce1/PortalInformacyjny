@@ -1,4 +1,6 @@
-﻿namespace ProjektZaliczeniowy.Models
+﻿using ProjektZaliczeniowy.entities;
+
+namespace ProjektZaliczeniowy.Models
 {
     public class ArticleDto
     {
@@ -7,6 +9,7 @@
         public string Content { get; set; }
         public int Likes { get; set; }
         public int DisLikes { get; set; }
+        public int? AuthorId { get; set; }
 
     }
 }

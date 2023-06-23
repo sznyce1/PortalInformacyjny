@@ -67,10 +67,38 @@ namespace ProjektZaliczeniowy
                             Content = "Lorem Ipsum Lorem Ipsum",
                             Likes = 10,
                             DisLikes = 20,
+                            },
+                            new Comment()
+                            {
+                            Content = "Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+                            Likes = 0,
+                            DisLikes = 0,
                             }
                         },
                         Likes = 20,
                         DisLikes = 10,
+                        },
+                        new Article()
+                        {
+                        Name = "Test2",
+                        Content = "Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+                        Comments = new List<Comment>()
+                        {
+                            new Comment()
+                            {
+                            Content = "Lorem Ipsum Lorem Ipsum",
+                            Likes = null,
+                            DisLikes = null,
+                            },
+                            new Comment()
+                            {
+                            Content = "Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+                            Likes = 0,
+                            DisLikes = 0,
+                            }
+                        },
+                        Likes = 100,
+                        DisLikes = 100,
                         }
                     }
                 }

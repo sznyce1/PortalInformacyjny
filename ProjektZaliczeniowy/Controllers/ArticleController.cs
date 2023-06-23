@@ -14,10 +14,12 @@ namespace ProjektZaliczeniowy.Controllers
     public class ArticleController : ControllerBase
     {
         private readonly IArticleService _articleService;
+        private readonly IReactionService _reactionService;
 
-        public ArticleController(IArticleService articleService)
+        public ArticleController(IArticleService articleService, IReactionService reactionService)
         {
             _articleService = articleService;
+            _reactionService = reactionService;
         }
         [HttpPost]
         [Authorize]
@@ -56,6 +58,34 @@ namespace ProjektZaliczeniowy.Controllers
         {
             _articleService.DeleteById(categoryName, articleId);
             return NoContent();
+        }
+        [HttpPost("{articleId}/like")]
+        [Authorize]
+        public ActionResult Like([FromRoute] int articleId)
+        {
+            _reactionService.Like(articleId, null);
+            return Ok();
+        }
+        [HttpPost("{articleId}/unlike")]
+        [Authorize]
+        public ActionResult UnLike([FromRoute] int articleId)
+        {
+            _reactionService.UnLike(articleId, null);
+            return Ok();
+        }
+        [HttpPost("{articleId}/dislike")]
+        [Authorize]
+        public ActionResult DisLike([FromRoute] int articleId)
+        {
+            _reactionService.DisLike(articleId, null);
+            return Ok();
+        }
+        [HttpPost("{articleId}/undislike")]
+        [Authorize]
+        public ActionResult UnDisLike([FromRoute] int articleId)
+        {
+            _reactionService.UnDisLike(articleId, null);
+            return Ok();
         }
     }
 }

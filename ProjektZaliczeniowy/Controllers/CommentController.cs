@@ -9,15 +9,17 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace ProjektZaliczeniowy.Controllers
 {
-    [Route("api/category/{categoryName}/article/{articleId}")]
+    [Route("api/category/{categoryName}/article/{articleId}/comments")]
     [ApiController]
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
+        private readonly IReactionService _reactionService;
 
-        public CommentController(ICommentService commentService)
+        public CommentController(ICommentService commentService, IReactionService reactionService)
         {
             _commentService = commentService;
+            _reactionService = reactionService;
         }
         [HttpPost]
         [Authorize]
@@ -53,6 +55,34 @@ namespace ProjektZaliczeniowy.Controllers
         {
             _commentService.DeleteById(articleId, commentId);
             return NoContent();
+        }
+        [HttpPost("{commentId}/like")]
+        [Authorize]
+        public ActionResult Like([FromRoute] int commentId)
+        {
+            _reactionService.Like(null, commentId);
+            return Ok();
+        }
+        [HttpPost("{commentId}/unlike")]
+        [Authorize]
+        public ActionResult UnLike([FromRoute] int commentId)
+        {
+            _reactionService.UnLike(null, commentId);
+            return Ok();
+        }
+        [HttpPost("{commentId}/dislike")]
+        [Authorize]
+        public ActionResult DisLike([FromRoute] int commentId)
+        {
+            _reactionService.DisLike(null, commentId);
+            return Ok();
+        }
+        [HttpPost("{commentId}/undislike")]
+        [Authorize]
+        public ActionResult UnDisLike([FromRoute] int commentId)
+        {
+            _reactionService.UnDisLike(null, commentId);
+            return Ok();
         }
     }
 }

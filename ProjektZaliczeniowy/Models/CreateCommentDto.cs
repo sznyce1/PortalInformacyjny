@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ProjektZaliczeniowy.entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProjektZaliczeniowy.Models
 {
@@ -9,5 +10,6 @@ namespace ProjektZaliczeniowy.Models
         public string Content { get; set; }
         [Required]
         public int ArticleID { get; set; }
+        public int? AuthorId { get; set; }
     }
 }
