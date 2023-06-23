@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ProjektZaliczeniowy.Authorization
 {
-    public class ResourceOperationRequirementHandler : AuthorizationHandler<ResourceOperationRequirement, Article>
+    public class ArticleResourceOperationRequirementHandler : AuthorizationHandler<ResourceOperationRequirement, Article>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ResourceOperationRequirement requirement, Article article)
         {

@@ -12,5 +12,7 @@ namespace ProjektZaliczeniowy.entities
         public int Likes { get; set; }
         public int DisLikes { get; set; }
         public int ArticleID { get; set; }
+        public int? AuthorId { get; set; }
+        public virtual User Author { get; set; }
     }
 }

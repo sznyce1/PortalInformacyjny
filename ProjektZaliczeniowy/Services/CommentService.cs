@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using ProjektZaliczeniowy.Authorization;
 using ProjektZaliczeniowy.entities;
 using ProjektZaliczeniowy.Exceptions;
 using ProjektZaliczeniowy.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace ProjektZaliczeniowy.Services
 {
@@ -14,17 +17,19 @@ namespace ProjektZaliczeniowy.Services
         Comment GetById(int articleId, int commentId);
         List<Comment> GetAll(int articleId);
         void RemoveAll(int articleId);
-        void DeleteById(int articleId, int commentId);
+        void DeleteById(int articleId, int commentId, ClaimsPrincipal user);
     }
     public class CommentService : ICommentService
     {
         private readonly ArticleDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IAuthorizationService _authorizationService;
 
-        public CommentService(ArticleDbContext dbContext, IMapper mapper)
+        public CommentService(ArticleDbContext dbContext, IMapper mapper, IAuthorizationService authorizationService)
         {
             _context = dbContext;
             _mapper = mapper;
+            _authorizationService = authorizationService;
         }
         public int Create(int articleId, CreateCommentDto dto)
         {
@@ -56,7 +61,7 @@ namespace ProjektZaliczeniowy.Services
             _context.RemoveRange(article.Comments);
             _context.SaveChanges();
         }
-        public void DeleteById(int articleId, int commentId)
+        public void DeleteById(int articleId, int commentId, ClaimsPrincipal user)
         {
             var article = GetArticleById(articleId);
             var comment = _context.Comments.FirstOrDefault(c => c.Id == commentId);
@@ -64,6 +69,9 @@ namespace ProjektZaliczeniowy.Services
             {
                 throw new NotFoundException("Comment not found");
             }
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(user, article, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+
             _context.Remove(article.Comments.FirstOrDefault(c => c.Id == commentId));
             _context.SaveChanges();
 

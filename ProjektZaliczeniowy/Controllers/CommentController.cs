@@ -46,10 +46,10 @@ namespace ProjektZaliczeniowy.Controllers
             return NoContent();
         }
         [HttpDelete("{commentId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public ActionResult DeleteById([FromRoute] int articleId, [FromRoute] int commentId)
         {
-            _commentService.DeleteById(articleId, commentId);
+            _commentService.DeleteById(articleId, commentId, User);
             return NoContent();
         }
     }
