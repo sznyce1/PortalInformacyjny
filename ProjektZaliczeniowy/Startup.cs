@@ -60,6 +60,7 @@ namespace ProjektZaliczeniowy
 
             });
             services.AddScoped<IAuthorizationHandler, ArticleResourceOperationRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, CommentResourceOperationRequirementHandler>();
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<ArticleDbContext>();
             services.AddScoped<ArticleSeeder>();

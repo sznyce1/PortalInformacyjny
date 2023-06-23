@@ -25,7 +25,6 @@ namespace ProjektZaliczeniowy.Middleware
             {
                 context.Response.StatusCode = 403;
             }
-
             catch (BadRequestException badRequestException)
             {
                 context.Response.StatusCode = 400;

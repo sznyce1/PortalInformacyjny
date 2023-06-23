@@ -84,6 +84,10 @@ namespace ProjektZaliczeniowy.Services
                 throw new NotFoundException("Article Not Found");
 
             var authorizationResult = _authorizationService.AuthorizeAsync(user, article, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
 
             _context.Remove(category.Articles.FirstOrDefault(a => a.Id == articleId));
             _context.SaveChanges();

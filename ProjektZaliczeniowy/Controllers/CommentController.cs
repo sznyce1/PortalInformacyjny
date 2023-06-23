@@ -4,6 +4,7 @@ using ProjektZaliczeniowy.entities;
 using ProjektZaliczeniowy.Models;
 using ProjektZaliczeniowy.Services;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 
 namespace ProjektZaliczeniowy.Controllers
@@ -22,7 +23,8 @@ namespace ProjektZaliczeniowy.Controllers
         [Authorize]
         public ActionResult Post([FromRoute]string categoryName, [FromRoute]int articleId, CreateCommentDto dto)
         {
-            var newCommentId = _commentService.Create(articleId, dto);
+            var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var newCommentId = _commentService.Create(articleId, dto, userId);
             return Created($"api/category/{categoryName}/article/{articleId}/comment/{newCommentId}",null);
         }
         [HttpGet("{commentId}")]

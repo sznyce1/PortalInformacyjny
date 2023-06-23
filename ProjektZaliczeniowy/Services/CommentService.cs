@@ -13,7 +13,7 @@ namespace ProjektZaliczeniowy.Services
 {
     public interface ICommentService
     {
-        int Create(int articleId, CreateCommentDto dto);
+        int Create(int articleId, CreateCommentDto dto, int userId);
         Comment GetById(int articleId, int commentId);
         List<Comment> GetAll(int articleId);
         void RemoveAll(int articleId);
@@ -31,10 +31,11 @@ namespace ProjektZaliczeniowy.Services
             _mapper = mapper;
             _authorizationService = authorizationService;
         }
-        public int Create(int articleId, CreateCommentDto dto)
+        public int Create(int articleId, CreateCommentDto dto,int userId)
         {
             var article = GetArticleById(articleId);
             var commentEntity = _mapper.Map<Comment>(dto);
+            commentEntity.AuthorId = userId;
             _context.Comments.Add(commentEntity);
             _context.SaveChanges();
 
@@ -71,7 +72,10 @@ namespace ProjektZaliczeniowy.Services
             }
 
             var authorizationResult = _authorizationService.AuthorizeAsync(user, article, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
-
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
             _context.Remove(article.Comments.FirstOrDefault(c => c.Id == commentId));
             _context.SaveChanges();
 
