@@ -15,9 +15,9 @@ namespace ProjektZaliczeniowy.Services
 {
     public interface IArticleService 
     {
-        int Create(string categoryName, CreateArticleDto dto, int userId);
+        int Create(string categoryName, CreateArticleDto dto);
         void DeleteAll(string categoryName);
-        void DeleteById(string categoryName, int articleId,ClaimsPrincipal user);
+        void DeleteById(string categoryName, int articleId);
         ArticleDto Get(string categoryName, int articleId);
         List<ArticleDto> GetAll(string categoryName);
     }
@@ -26,20 +26,22 @@ namespace ProjektZaliczeniowy.Services
         private readonly ArticleDbContext _context;
         private readonly IMapper _mapper;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextService _userContextService;
 
-        public ArticleService(ArticleDbContext context, IMapper mapper, IAuthorizationService authorizationService)
+        public ArticleService(ArticleDbContext context, IMapper mapper, IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _context = context;
             _mapper = mapper;
             _authorizationService = authorizationService;
+            _userContextService = userContextService;
         }
-        public int Create(string categoryName, CreateArticleDto dto,int userId)
+        public int Create(string categoryName, CreateArticleDto dto)
         {
             var category = GetCategoryByName(categoryName);
             
             var articleEntity = _mapper.Map<Article>(dto);
             articleEntity.CategoryId = category.Id;
-            articleEntity.AuthorId = userId;
+            articleEntity.AuthorId = _userContextService.GetUserId;
             _context.Articles.Add(articleEntity);
             _context.SaveChanges();
 
@@ -75,7 +77,7 @@ namespace ProjektZaliczeniowy.Services
             _context.RemoveRange(category.Articles);
             _context.SaveChanges();
         }
-        public void DeleteById(string categoryName, int articleId, ClaimsPrincipal user)
+        public void DeleteById(string categoryName, int articleId)
         {
             var category = GetCategoryByName(categoryName);
 
@@ -83,7 +85,7 @@ namespace ProjektZaliczeniowy.Services
             if (article is null)
                 throw new NotFoundException("Article Not Found");
 
-            var authorizationResult = _authorizationService.AuthorizeAsync(user, article, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, article, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
             if (!authorizationResult.Succeeded)
             {
                 throw new ForbidException();

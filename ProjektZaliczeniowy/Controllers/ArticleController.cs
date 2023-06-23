@@ -23,8 +23,8 @@ namespace ProjektZaliczeniowy.Controllers
         [Authorize]
         public ActionResult Post([FromRoute] string categoryName, [FromBody] CreateArticleDto dto)
         {
-            var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var newArticleId = _articleService.Create(categoryName, dto, userId);
+
+            var newArticleId = _articleService.Create(categoryName, dto);
 
             return Created($"api/category/{categoryName}/article/{newArticleId}", null);
 
@@ -54,7 +54,7 @@ namespace ProjektZaliczeniowy.Controllers
         [Authorize]
         public ActionResult DeleteById([FromRoute] string categoryName, [FromRoute] int articleId)
         {
-            _articleService.DeleteById(categoryName, articleId, User);
+            _articleService.DeleteById(categoryName, articleId);
             return NoContent();
         }
     }

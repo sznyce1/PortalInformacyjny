@@ -13,29 +13,31 @@ namespace ProjektZaliczeniowy.Services
 {
     public interface ICommentService
     {
-        int Create(int articleId, CreateCommentDto dto, int userId);
+        int Create(int articleId, CreateCommentDto dto);
         Comment GetById(int articleId, int commentId);
         List<Comment> GetAll(int articleId);
         void RemoveAll(int articleId);
-        void DeleteById(int articleId, int commentId, ClaimsPrincipal user);
+        void DeleteById(int articleId, int commentId);
     }
     public class CommentService : ICommentService
     {
         private readonly ArticleDbContext _context;
         private readonly IMapper _mapper;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextService _userContextService;
 
-        public CommentService(ArticleDbContext dbContext, IMapper mapper, IAuthorizationService authorizationService)
+        public CommentService(ArticleDbContext dbContext, IMapper mapper, IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _context = dbContext;
             _mapper = mapper;
             _authorizationService = authorizationService;
+            _userContextService = userContextService;
         }
-        public int Create(int articleId, CreateCommentDto dto,int userId)
+        public int Create(int articleId, CreateCommentDto dto)
         {
             var article = GetArticleById(articleId);
             var commentEntity = _mapper.Map<Comment>(dto);
-            commentEntity.AuthorId = userId;
+            commentEntity.AuthorId = _userContextService.GetUserId;
             _context.Comments.Add(commentEntity);
             _context.SaveChanges();
 
@@ -62,7 +64,7 @@ namespace ProjektZaliczeniowy.Services
             _context.RemoveRange(article.Comments);
             _context.SaveChanges();
         }
-        public void DeleteById(int articleId, int commentId, ClaimsPrincipal user)
+        public void DeleteById(int articleId, int commentId)
         {
             var article = GetArticleById(articleId);
             var comment = _context.Comments.FirstOrDefault(c => c.Id == commentId);
@@ -71,7 +73,7 @@ namespace ProjektZaliczeniowy.Services
                 throw new NotFoundException("Comment not found");
             }
 
-            var authorizationResult = _authorizationService.AuthorizeAsync(user, article, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, article, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
             if (!authorizationResult.Succeeded)
             {
                 throw new ForbidException();
