@@ -1,20 +1,23 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProjektZaliczeniowy.Authorization;
 using ProjektZaliczeniowy.entities;
 using ProjektZaliczeniowy.Exceptions;
 using ProjektZaliczeniowy.Models;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Claims;
 
 namespace ProjektZaliczeniowy.Services
 {
     public interface IArticleService 
     {
-        int Create(string categoryName, CreateArticleDto dto);
+        int Create(string categoryName, CreateArticleDto dto, int userId);
         void DeleteAll(string categoryName);
-        void DeleteById(string categoryName, int articleId);
+        void DeleteById(string categoryName, int articleId,ClaimsPrincipal user);
         ArticleDto Get(string categoryName, int articleId);
         List<ArticleDto> GetAll(string categoryName);
     }
@@ -22,19 +25,21 @@ namespace ProjektZaliczeniowy.Services
     {
         private readonly ArticleDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IAuthorizationService _authorizationService;
 
-        public ArticleService(ArticleDbContext context, IMapper mapper)
+        public ArticleService(ArticleDbContext context, IMapper mapper, IAuthorizationService authorizationService)
         {
             _context = context;
             _mapper = mapper;
+            _authorizationService = authorizationService;
         }
-        public int Create(string categoryName, CreateArticleDto dto)
+        public int Create(string categoryName, CreateArticleDto dto,int userId)
         {
             var category = GetCategoryByName(categoryName);
-
+            
             var articleEntity = _mapper.Map<Article>(dto);
             articleEntity.CategoryId = category.Id;
-
+            articleEntity.AuthorId = userId;
             _context.Articles.Add(articleEntity);
             _context.SaveChanges();
 
@@ -70,13 +75,15 @@ namespace ProjektZaliczeniowy.Services
             _context.RemoveRange(category.Articles);
             _context.SaveChanges();
         }
-        public void DeleteById(string categoryName, int articleId)
+        public void DeleteById(string categoryName, int articleId, ClaimsPrincipal user)
         {
             var category = GetCategoryByName(categoryName);
 
             var article = category.Articles.FirstOrDefault(a => a.Id == articleId);
             if (article is null)
                 throw new NotFoundException("Article Not Found");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(user, article, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
 
             _context.Remove(category.Articles.FirstOrDefault(a => a.Id == articleId));
             _context.SaveChanges();

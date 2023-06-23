@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProjektZaliczeniowy.entities;
 using ProjektZaliczeniowy.Models;
 using ProjektZaliczeniowy.Services;
@@ -18,6 +19,7 @@ namespace ProjektZaliczeniowy.Controllers
             _commentService = commentService;
         }
         [HttpPost]
+        [Authorize]
         public ActionResult Post([FromRoute]string categoryName, [FromRoute]int articleId, CreateCommentDto dto)
         {
             var newCommentId = _commentService.Create(articleId, dto);
@@ -36,6 +38,7 @@ namespace ProjektZaliczeniowy.Controllers
             return Ok(comments);
         }
         [HttpDelete]
+        [Authorize(Roles ="Admin")]
         public ActionResult Delete([FromRoute] int articleId) 
         {
             _commentService.RemoveAll(articleId);
@@ -43,6 +46,7 @@ namespace ProjektZaliczeniowy.Controllers
             return NoContent();
         }
         [HttpDelete("{commentId}")]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteById([FromRoute] int articleId, [FromRoute] int commentId)
         {
             _commentService.DeleteById(articleId, commentId);

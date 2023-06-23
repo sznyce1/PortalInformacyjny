@@ -1,6 +1,7 @@
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using ProjektZaliczeniowy.Authorization;
 using ProjektZaliczeniowy.entities;
 using ProjektZaliczeniowy.Middleware;
 using ProjektZaliczeniowy.Models;
@@ -57,6 +59,7 @@ namespace ProjektZaliczeniowy
                 };
 
             });
+            services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<ArticleDbContext>();
             services.AddScoped<ArticleSeeder>();

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProjektZaliczeniowy.entities;
 using ProjektZaliczeniowy.Models;
 using ProjektZaliczeniowy.Services;
 using System.Collections.Generic;
+using System.Data;
+using System.Security.Claims;
 
 namespace ProjektZaliczeniowy.Controllers
 {
@@ -17,9 +20,11 @@ namespace ProjektZaliczeniowy.Controllers
             _articleService = articleService;
         }
         [HttpPost]
+        [Authorize]
         public ActionResult Post([FromRoute] string categoryName, [FromBody] CreateArticleDto dto)
         {
-            var newArticleId = _articleService.Create(categoryName, dto);
+            var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var newArticleId = _articleService.Create(categoryName, dto, userId);
 
             return Created($"api/category/{categoryName}/article/{newArticleId}", null);
 
@@ -39,21 +44,18 @@ namespace ProjektZaliczeniowy.Controllers
             return Ok(result);
         }
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete([FromRoute] string categoryName)
         {
             _articleService.DeleteAll(categoryName);
             return NoContent();
         }
         [HttpDelete("{articleId}")]
+        [Authorize]
         public ActionResult DeleteById([FromRoute] string categoryName, [FromRoute] int articleId)
         {
-            _articleService.DeleteById(categoryName, articleId);
+            _articleService.DeleteById(categoryName, articleId, User);
             return NoContent();
-        }
-        [HttpGet("{articleId}/comments")]
-        public List<Comment> GetArticleComments()
-        {
-            var comments = ArticleService.GetComments();
         }
     }
 }

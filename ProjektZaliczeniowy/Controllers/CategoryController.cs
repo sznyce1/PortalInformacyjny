@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjektZaliczeniowy.entities;
@@ -6,6 +7,7 @@ using ProjektZaliczeniowy.Models;
 using ProjektZaliczeniowy.Services;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,6 +24,7 @@ namespace ProjektZaliczeniowy.Controllers
             _categoryService = categoryService;
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete([FromRoute] int id)
         {
             _categoryService.Delete(id);
@@ -30,6 +33,7 @@ namespace ProjektZaliczeniowy.Controllers
             
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult CreateCategory([FromBody]CreateCategoryDto dto)
         {
             //kod wywoływany automatycznie przez atrybut api kontroller
