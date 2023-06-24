@@ -76,12 +76,20 @@ namespace ProjektZaliczeniowy
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddHttpContextAccessor();
             services.AddSwaggerGen();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("FrontEnd", builder =>
+                    builder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .WithOrigins(Configuration["AllowedOrigins"])
+                );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ArticleSeeder seeder)
         {
-            
+            app.UseCors("FrontEnd");
             seeder.Seed();
             if (env.IsDevelopment())
             {
