@@ -15,7 +15,7 @@ namespace ProjektZaliczeniowy.Authorization
             }
 
             var userId = context.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            if(article.AuthorId == int.Parse(userId))
+            if(article.AuthorId == int.Parse(userId) || context.User.IsInRole("Admin"))
             {
                 context.Succeed(requirement);
             }

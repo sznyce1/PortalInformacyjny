@@ -87,8 +87,8 @@ namespace ProjektZaliczeniowy
                             new Comment()
                             {
                             Content = "Lorem Ipsum Lorem Ipsum",
-                            Likes = null,
-                            DisLikes = null,
+                            Likes = 1,
+                            DisLikes = 1,
                             },
                             new Comment()
                             {
